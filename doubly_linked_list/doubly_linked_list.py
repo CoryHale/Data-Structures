@@ -8,23 +8,26 @@ class ListNode:
         self.prev = prev
         self.next = next
 
+    def __repr__(self):
+        return f"\n data: {self.value} \n prev: {self.prev} \n next: {self.next}"
+
 
     """Wrap the given value in a ListNode and insert it
     after this node. Note that this node could already
     have a next node it is point to."""
     def insert_after(self, value):
         current_next = self.next
-        self.next = ListNode(self, value, current_next)
+        self.next = ListNode(value, self, current_next)
         if current_next:
             current_next.prev = self.next
 
 
     """Wrap the given value in a ListNode and insert it
-    before this node. Note that this node could already
+    before this node. NotF  DEEGV e that this node could already
     have a previous node it is point to."""
     def insert_before(self, value):
         current_prev = self.prev
-        self.prev = ListNode(self, value, current_prev)
+        self.prev = ListNode(value, current_prev, self)
         if current_prev:
             current_prev.next = self.prev
 
@@ -50,6 +53,9 @@ class DoublyLinkedList:
 
     def __len__(self):
         return self.length
+
+    def __str__(self):
+        return f"{self.head}"
 
 
     """Wraps the given value in a ListNode and inserts it 

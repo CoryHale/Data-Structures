@@ -14,7 +14,7 @@ class LRUCache:
         self.limit = limit
         self.size = size
         self.dll = DoublyLinkedList()
-        self.storage = {}
+        self.storage = dict()
 
     """
     Retrieves the value associated with the given key. Also
@@ -24,7 +24,14 @@ class LRUCache:
     key-value pair doesn't exist in the cache.
     """
     def get(self, key):
-        pass
+        if key in self.storage.keys():
+            node = self.storage[key]
+            # MRU at the head
+            self.dll.move_to_front(node)
+            return node.value
+        else:
+            return None
+
 
     """
     Adds the given key-value pair to the cache. The newly-
@@ -37,11 +44,19 @@ class LRUCache:
     the newly-specified value.
     """
     def set(self, key, value):
-        node_value = (key, value)
         if key not in self.storage.keys():
-            self.storage[key] = value
             if self.size < self.limit:
-                self.dll.add_to_tail(node_value)
+                self.dll.add_to_head(value)
+                self.size += 1
             else:
-                self.dll.remove_from_head()
-                self.dll.add_to_tail(node_value)
+                deleted_node = self.dll.tail
+                self.dll.remove_from_tail()
+                self.dll.add_to_head(value)
+                del_key = [key for (key, value) in self.storage.items() if value == deleted_node]
+                del self.storage[del_key[0]]
+            self.storage[key] = self.dll.head
+        else:
+            old_node = self.storage[key]
+            self.dll.delete(old_node)
+            self.dll.add_to_head(value)
+            self.storage[key] = self.dll.head
